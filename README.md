@@ -17,7 +17,7 @@ This is a sibling repository to the Science Centre's [Spatial Data Catalog and M
 ## Features
 
 ### **Preprocessing Scripts**
-The preprocessing scripts include general functions for preparing raw geospatial data for analysis, including:
+Preprocessing scripts include general functions for preparing raw geospatial data for analysis, including:
 - **Spectral Index Calculation**: Compute common vegetation indices (e.g., NDVI, EVI) from satellite imagery.
 - **Focal Statistics**: Derive neighborhood-based metrics (e.g., mean, standard deviation) for raster data.
 - **Mosaic Creation**: Merge downloaded raster tiles into a single continuous layer.
