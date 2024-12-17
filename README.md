@@ -4,6 +4,7 @@
 
 <img src="https://drive.google.com/uc?id=1szqLViKqTX5C1XF8uV7HbIst0i6Xvv7g" alt="Logo" width="300">
 
+</br>
 
 # Geospatial Preprocessing and Extraction Toolkit 
 
@@ -16,13 +17,13 @@ This is a sibling repository to the Science Centre's [Spatial Data Catalog and M
 ## Features
 
 ### **Preprocessing Scripts**
-The preprocessing scripts include general functions for preparing raw geospatial data for analysis, including:
+Preprocessing scripts include general functions for preparing raw geospatial data for analysis, including:
 - **Spectral Index Calculation**: Compute common vegetation indices (e.g., NDVI, EVI) from satellite imagery.
 - **Focal Statistics**: Derive neighborhood-based metrics (e.g., mean, standard deviation) for raster data.
 - **Mosaic Creation**: Merge downloaded raster tiles into a single continuous layer.
 
 ### **Extraction Vignette**
-Instead of reinventing the wheel, this toolkit provides a detailed vignette on how to extract geospatial data using established libraries like `terra` and `sf`. The vignette guides users through:
+Here is a [vignette](geospatial_extraction.md) for extracting geospatial data using established libraries like `terra` and `sf`. The vignette guides users through:
 - Extracting raster values to point locations.
 - Summarizing raster data within polygons.
 - Getting raster summary statistics.
