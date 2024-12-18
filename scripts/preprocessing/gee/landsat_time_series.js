@@ -180,7 +180,7 @@ var ls = landsatTimeSeries.ls_fn(
 // var ndviVisParams = {
 //   min: -0.1, // Lower limit for NDVI values
 //   max: 1.0,  // Upper limit for NDVI values
-//   palette: ['blue', 'white', 'green'] // Color palette for NDVI visualization
+//   palette: ['blue', 'white', 'green'] // Color palette
 // };
 
 // // Extract the NDVI band from the 2024 image
