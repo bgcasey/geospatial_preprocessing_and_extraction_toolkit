@@ -49,7 +49,7 @@ exports.s2_fn = function(dates, interval, intervalType, aoi, selectedIndices) {
     var start = ee.Date(d1);
     var minStartDate = ee.Date('2019-05-01');
     
-    // Adjust start date if it is before 05/01/2017
+    // Adjust start date if it is before 05/01/2019
     start = ee.Date(ee.Algorithms.If(start.millis().lt(minStartDate.millis()), minStartDate, start));
     
     var end = start.advance(interval, intervalType);
@@ -122,16 +122,22 @@ selectedIndices.forEach(function(index) {
   }
 });
     
-    // Return median of collection with metadata
-    return s2Collection
-      .select(selectedIndices)
-      .median()
-      .set({
-        "start_date": start.format('YYYY-MM-dd'), 
-        "end_date": end.format('YYYY-MM-dd'), 
-        "month": start.get('month'), 
-        "year": start.get('year')
-      });
+    // Create a median composite of the raw bands
+    var rawBands = s2Collection.select([
+      'B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 
+      'B8', 'B8A', 'B9', 'B11', 'B12'
+    ]).median();
+
+    // Create a median composite of the calculated indices
+    var indicesComposite = s2Collection.select(selectedIndices).median();
+
+    // Combine raw bands and calculated indices into one image
+    return indicesComposite.addBands(rawBands).set({
+      "start_date": start.format('YYYY-MM-dd'), 
+      "end_date": end.format('YYYY-MM-dd'), 
+      "month": start.get('month'), 
+      "year": start.get('year')
+    });
   };
 
   // Map processing function over dates, clip to AOI, return collection

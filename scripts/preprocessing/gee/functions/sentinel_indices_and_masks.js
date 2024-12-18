@@ -156,16 +156,23 @@ exports.addNDRE2 = function(image) {
 
 /**
  * Adds Normalized Difference Red-edge Index 3 (NDRE3) band to an image.
+ * Checks for required bands before applying the calculation.
  * @param {ee.Image} image - The input image.
- * @returns {ee.Image} The image with the added NDRE3 band.
+ * @returns {ee.Image} The image with the added NDRE3 band (if bands exist).
  */
 exports.addNDRE3 = function(image) {
-  var NDRE3 = image.expression(
-    '(RedEdge4 - RedEdge3) / (RedEdge4 + RedEdge3)', {
-      'RedEdge4': image.select('B8A'),
-      'RedEdge3': image.select('B7'),
-    }).rename('NDRE3');
-  return image.addBands([NDRE3]);
+  var bands = ['B8A', 'B7']; // Required bands
+  var hasBands = bands.every(function(b) { return image.bandNames().contains(b); });
+
+  return ee.Algorithms.If(
+    hasBands,
+    image.addBands(image.expression(
+      '(RedEdge4 - RedEdge3) / (RedEdge4 + RedEdge3)', {
+        'RedEdge4': image.select('B8A'),
+        'RedEdge3': image.select('B7')
+      }).rename('NDRE3')),
+    image  // Return original image if bands are missing
+  );
 };
 
 /**
@@ -196,91 +203,127 @@ exports.addNDWI = function(image) {
   return image.addBands([NDWI]);
 };
 
-/**
- * Adds Normalized Distance Red & SWIR (NDRS) band 
- * to an image. Assumes the presence of a DRS band and applies 
- * a forest mask to get min and max DRS of forested pixels.
- * It calls a function that gets forest data from
- * https://gee-community-catalog.org/projects/ca_lc/.
- * 
- * @param {Object} image - The image to process.
- * @returns {Object} The image with the NDRS band added.
- */
-exports.addNDRS = function(image) {
+// /**
+// * Adds Normalized Distance Red & SWIR (NDRS) band 
+// * to an image for specific forest types and appends a suffix:
+// * - Class Code: 210 - Coniferous (_coni)
+// * - Class Code: 220 - Broadleaf (_deci)
+// * - Class Code: 230 - Mixedwood (_mixed)
+// * 
+// * @param {ee.Image} image - DRS image to normalize.
+// * @param {Array} forestTypes - Forest type codes to include.
+// * @returns {ee.Image} The image with NDRS bands added and renamed.
+// */
+
+exports.addNDRS = function(image, forestTypes) {
   // Define the area of interest (AOI) using the image's geometry
   var aoi = image.geometry();
   
   // Extract the year from the image properties
   var year = ee.Number.parse(image.get('year'));
-  
+
   // Define start and end dates based on the year
   var startDate = ee.Algorithms.If(
     year.gte(2019),
     ee.Date('2019-01-01'),
-    // Create start date of "year-01-01"
-    ee.Date(year.format().cat('-01-01')) 
+    ee.Date(year.format().cat('-01-01')) // Start date of "year-01-01"
   );
   
   var endDate = ee.Algorithms.If(
     year.gte(2019),
     ee.Date('2019-12-31'),
-    // Create end date of "year-12-31"
-    ee.Date(year.format().cat('-12-31')) 
+    ee.Date(year.format().cat('-12-31')) // End date of "year-12-31"
   );
-    
-    // Load landcover data for the specified period
-    var forest_lc = require(
-      "users/bgcasey/functions:annual_forest_land_cover");
-    var lcCollection = forest_lc.lc_fn(startDate, endDate, aoi);
-    var landcoverImage = ee.Image(lcCollection.first())
-      .select('forest_lc_class');
-    
-    // Create a mask for forest pixels
-    var forestMask = landcoverImage.remap([210, 220, 230], [1, 1, 1], 0);
   
-    // Apply the forest mask to the DRS band
-    var DRS = image.select('DRS');
-    var maskedDRS = DRS.updateMask(forestMask);
-    
-    // Calculate min and max of DRS for forest pixels
-    var minMax = maskedDRS.reduceRegion({
-      reducer: ee.Reducer.minMax(),
-      geometry: aoi.bounds(),
-      scale: 1000,
-      maxPixels: 1e10,
-      bestEffort: true,
-      tileScale: 8
-    });
-    
-    // Extract the min and max values
-    var DRSmin = ee.Number(minMax.get('DRS_min'));
-    var DRSmax = ee.Number(minMax.get('DRS_max'));
-    
-    // Calculate NDRS using the min and max values
-    var NDRS = image.expression(
-      '(DRS - DRSmin) / (DRSmax - DRSmin)', {
-        'DRS': DRS,
-        'DRSmin': DRSmin,
-        'DRSmax': DRSmax
-      }).rename('NDRS');
-    
-    // Add the NDRS band to the image
-    return image.addBands(NDRS);
-  };
+    // Load landcover data for the specified period
+  var forest_lc = require("users/bgcasey/functions:annual_forest_land_cover");
+  var lcCollection = forest_lc.lc_fn(startDate, endDate, aoi);
+  var landcoverImage = ee.Image(lcCollection.first())
+    .select('forest_lc_class');
+  
+  // Create a mask for the specified forest types
+  forestTypes = forestTypes || [210, 220, 230]; // Default to all three types
+  var forestMask = landcoverImage.remap(forestTypes, 
+    ee.List.repeat(1, forestTypes.length), 0);
+  
+  // Apply the forest mask to the DRS band
+  var DRS = image.select('DRS');
+  var maskedDRS = DRS.updateMask(forestMask);
+  
+  // Calculate min and max of DRS for forest pixels
+  var minMax = maskedDRS.reduceRegion({
+    reducer: ee.Reducer.minMax(),
+    geometry: aoi.bounds(),
+    scale: 1000,
+    maxPixels: 1e10,
+    bestEffort: true,
+    tileScale: 8
+  });
+  
+  // Extract the min and max values
+  var DRSmin = ee.Number(minMax.get('DRS_min'));
+  var DRSmax = ee.Number(minMax.get('DRS_max'));
+  
+  // Adjust pixel values to ensure they are within [DRSmin, DRSmax]
+  var adjustedDRS = DRS.clamp(DRSmin, DRSmax);
+
+  // Calculate NDRS using the min and max values
+  var NDRS = adjustedDRS.expression(
+    '(DRS - DRSmin) / (DRSmax - DRSmin)', {
+      'DRS': adjustedDRS,
+      'DRSmin': DRSmin,
+      'DRSmax': DRSmax
+    }).rename('NDRS');
+
+  // Rename the NDRS band with conditional suffixes
+  var suffix = ee.Algorithms.If(
+    forestTypes.length === 1,
+    ee.Algorithms.If(
+      forestTypes[0] === 210, '_coni', // Coniferous
+      ee.Algorithms.If(
+        forestTypes[0] === 220, '_deci', // Deciduous
+        '_mixed' // Mixedwood
+      )
+    ),
+    '_mixed' // More than one type defaults to mixed
+  );
+  NDRS = NDRS.rename(NDRS.bandNames().map(function(bandName) {
+    return ee.String(bandName).cat(suffix);
+  }));
+  
+  // Rename NDRS_coni_deci_mixed to NDRS_mixed
+  var renamedBands = NDRS.bandNames().map(function(bandName) {
+    return ee.String(bandName).replace('NDRS_coni_deci_mixed', 'NDRS_mixed');
+  });
+  NDRS = NDRS.rename(renamedBands);
+  
+  // Add the renamed NDRS band to the image
+  return image.addBands(NDRS);
+};
+
+
 
 /**
  * Adds Ratio Drought Index (RDI) band to an image.
+ * Checks for required bands before applying the calculation.
  * @param {ee.Image} image - The input image.
- * @returns {ee.Image} The image with the added RDI band.
+ * @returns {ee.Image} The image with the added RDI band (if bands exist).
  */
 exports.addRDI = function(image) {
-  var RDI = image.expression(
-    'SWIR2 / RedEdge4', {
-      'SWIR2': image.select('B12'),
-      'NIR': image.select('B8'),
-    }).rename('RDI');
-  return image.addBands([RDI]);
+  var bands = ['B12', 'B8A']; // Required bands
+  var hasBands = bands.every(function(b) { return image.bandNames().contains(b); });
+
+  return ee.Algorithms.If(
+    hasBands,
+    image.addBands(image.expression(
+      'SWIR2 / RedEdge4', {
+        'SWIR2': image.select('B12'),
+        'RedEdge4': image.select('B8A')
+      }).rename('RDI')),
+    image  // Return original image if bands are missing
+  );
 };
+
 
 /**
  * Creates a binary mask based on the NDRS threshold to 

@@ -266,13 +266,17 @@ exports.addNDRS = function(image, forestTypes) {
   var DRSmin = ee.Number(minMax.get('DRS_min'));
   var DRSmax = ee.Number(minMax.get('DRS_max'));
   
+ // Adjust pixel values to ensure they are within [DRSmin, DRSmax]
+  var adjustedDRS = DRS.clamp(DRSmin, DRSmax);
+
   // Calculate NDRS using the min and max values
-  var NDRS = image.expression(
+  var NDRS = adjustedDRS.expression(
     '(DRS - DRSmin) / (DRSmax - DRSmin)', {
-      'DRS': DRS,
+      'DRS': adjustedDRS,
       'DRSmin': DRSmin,
       'DRSmax': DRSmax
     }).rename('NDRS');
+
   
   // Rename the NDRS band with conditional suffixes
   var suffix = ee.Algorithms.If(
