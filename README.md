@@ -8,7 +8,9 @@
 
 # Geospatial Preprocessing and Extraction Toolkit 
 
-![In Development](https://img.shields.io/badge/Status-In%20Development-yellow)
+![In Development](https://img.shields.io/badge/Status-In%20Development-yellow) 
+![Languages](https://img.shields.io/badge/Languages-R%20%7C%20GEE%20JavaScript-blue)
+
 
 Here is a collection of scripts and resources designed to streamline geospatial data workflows, from preprocessing raw remote sensing data to extracting relevant features for analysis. This repository focuses on leveraging tools like Google Earth Engine (GEE), and the `terra` and `sf` R packages to handle common geospatial tasks efficiently and reproducibly.
 
