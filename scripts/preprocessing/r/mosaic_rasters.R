@@ -64,8 +64,8 @@ mosaic_rasters_in_directory <- function(path_name, export_filename, fun = "mean"
 
 #' Mosaic Rasters from a List of Files
 #'
-#' This function creates a mosaic from a provided list of raster files (`.tif`). 
-#' It saves the resulting mosaic to a file.
+#' This function creates a mosaic from a provided list of raster files 
+#' (`.tif`). It saves the resulting mosaic to a file.
 #'
 #' @param raster_files Character vector. List of full paths to raster files.
 #' @param export_filename Character. Full path where the resulting mosaic 

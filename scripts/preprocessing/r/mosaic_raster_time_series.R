@@ -15,8 +15,8 @@
 
 # 1. Setup ----
 
-## 1.1 Load required functions ----
-# Ensure the script `mosaic_rasters.R` is sourced for the `mosaic_rasters_in_list` function.
+## 1.1 Load required packages and functions ----
+library(terra)
 source("scripts/preprocessing/r/mosaic_rasters.R")
 
 ## 1.2 Define input and output directories ----
@@ -86,4 +86,3 @@ for (year in years) {
 }
 
 # End of script ----
-
