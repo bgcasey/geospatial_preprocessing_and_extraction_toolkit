@@ -30,3 +30,22 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 - Summarizing raster data within polygons.
 - Getting raster summary statistics.
 ---
+
+## Contents
+| File | Description |
+|------|-------------|
+| **Google Earth Engine** | |
+| [functions](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/tree/main/scripts/preprocessing/gee/functions) | Edited how NDRS is calculated (i.e. how the min/max of DRS pixels is determined). |
+| [.gee_git_clone.sh](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/.gee_git_clone.sh) | Script to clone a GEE repository to a local directory. |
+| [global_geomorphometric_layers.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/global_geomorphometric_layers.js) | Loads geomorphometric layers from the Geomorpho90m dataset, mosaics them, clips them to a specified area of interest (AOI), and combines them into a single multiband image.|
+| [hydrologically_adjusted_elevation.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/hydrologically_adjusted_elevation.js) | Extracts the hydrologically adjusted elevations (Height Above Nearest Drainage - HAND) from the MERIT Hydro dataset. |
+| [landsat_time_series.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/landsat_time_series.js) | Generates a time series of Landsat satellite imagery, calculates user-defined spectral indices, and outputs results as multiband images. |
+| [modis_land_cover_dynamics.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/modis_land_cover_dynamics.js) | Extracts all bands from the MODIS MCD12Q2 dataset for a given time period and AOI.|
+| [nrcan_topographic_indices.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/nrcan_topographic_indices.js) | Calculates terrain metrics including slope, aspect, and northness using the NRCan/CDEM dataset.|
+| [sentinel2_time_series.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/sentinel2_time_series.js) | Generates a time series of Sentinel-2 satellite imagery, calculates user-defined spectral indices, and outputs results as multiband images.|
+| [topographic_wetness_index.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/topographic_wetness_index.js) | Calculates the Topographic Wetness Index (TWI) using the MERIT Hydro dataset. The index is derived as ln(α/tanβ), where α is the upslope area and β is the slope. |
+| **R** | |
+| [mosaic_raster_time_series.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_raster_time_series.R) | Mosaics a time series of tiled raster files. |
+| [mosaic_rasters.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_rasters.R) | Functions to mosaic rasters in a directory or from a list of files. |
+
+
