@@ -46,6 +46,6 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 | [topographic_wetness_index.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/topographic_wetness_index.js) | Calculates the Topographic Wetness Index (TWI) using the MERIT Hydro dataset. The index is derived as ln(α/tanβ), where α is the upslope area and β is the slope. |
 | **R** | |
 | [mosaic_raster_time_series.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_raster_time_series.R) | Mosaics a time series of tiled raster files. |
-| [mosaic_rasters.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_rasters.R) | Functions to mosaic rasters in a directory or from a list of files. |
+| [mosaic_rasters.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_rasters.R) | Functions to mosaic rasters from a directory or a list of files. |
 
 
