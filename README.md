@@ -34,7 +34,7 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 ## Contents
 | File | Description |
 |------|-------------|
-| **Google Earth Engine** | |
+| **Google Earth Engine** [^1] | |
 | [functions](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/tree/main/scripts/preprocessing/gee/functions) | Various utility functions. |
 | [.gee_git_clone.sh](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/.gee_git_clone.sh) | Script to clone a GEE repository to a local directory. |
 | [global_geomorphometric_layers.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/global_geomorphometric_layers.js) | Loads geomorphometric layers from the Geomorpho90m dataset, mosaics them, clips them to a specified area of interest (AOI), and combines them into a single multiband image.|
@@ -47,5 +47,10 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 | **R** | |
 | [mosaic_raster_time_series.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_raster_time_series.R) | Mosaics a time series of tiled raster files. |
 | [mosaic_rasters.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_rasters.R) | Functions to mosaic rasters from a directory or a list of files. |
+
+---
+
+
+[^1]: The Google Earth Engine JavaScript files can be added directly to your Google Earth Engine Code Editor using [https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre](https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre).
 
 
