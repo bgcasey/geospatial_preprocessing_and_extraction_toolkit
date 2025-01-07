@@ -120,3 +120,101 @@ mosaic_rasters_in_list <- function(raster_files, export_filename, fun = "mean") 
 }
 
 
+
+
+
+
+
+#' Mosaic Rasters in Batches
+#'
+#' This function creates a mosaic from a large number of raster files 
+#' (`.tif`) by processing them in smaller batches. 
+#'
+#' @param raster_files Character vector. List of full paths to raster 
+#' files.
+#' @param export_filename Character. Full path where the resulting 
+#' mosaic raster will be saved.
+#' @param fun Character. Function to use for aggregating overlapping 
+#' raster values in the mosaic (e.g., "mean", "sum"). Defaults to 
+#' "mean".
+#' @param batch_size Integer. Number of raster files to process in 
+#' each batch. Defaults to 10.
+#'
+#' @return A `SpatRaster` object representing the final mosaic.
+#'
+#' @details This function processes raster files in smaller batches 
+#' to reduce memory and temporary file usage. It requires the 
+#' following R packages:
+#'          - terra
+#'
+#' Temporary files created during processing are cleared after each 
+#' batch using `terra::tmpFiles(remove = TRUE)`.
+#'
+#' # Example usage of the function
+#'
+#' raster_files <- c(
+#'   "X:/samba/abmisc/spatial_data/temp/raster1.tif",
+#'   "X:/samba/abmisc/spatial_data/temp/raster2.tif",
+#'   "X:/samba/abmisc/spatial_data/temp/raster3.tif"
+#' )
+#' 
+#' mosaic <- mosaic_rasters_in_batches(
+#'   raster_files = raster_files,
+#'   export_filename = "X:/samba/abmisc/spatial_data/landsat/all_landsat.tif",
+#'   fun = "mean",
+#'   batch_size = 5
+#' )
+#' print(mosaic)
+#'
+
+mosaic_rasters_in_batches <- function(raster_files, export_filename, 
+                                      fun = "mean", 
+                                      batch_size = 10) {
+  # Step 1: Check if any files are provided
+  if (length(raster_files) == 0) {
+    stop("No raster files provided for mosaicking.")
+  }
+  
+  # Step 2: Initialize an empty SpatRaster for the final mosaic
+  final_mosaic <- NULL
+  
+  # Step 3: Process raster files in batches
+  num_files <- length(raster_files)
+  for (i in seq(1, num_files, by = batch_size)) {
+    # Select a batch of raster files
+    batch_files <- raster_files[i:min(i + batch_size - 1, num_files)]
+    
+    # Create a SpatRasterCollection from the batch
+    rsrc <- terra::sprc(batch_files)
+    
+    # Create a mosaic from the batch
+    batch_mosaic <- terra::mosaic(rsrc, fun = fun)
+    
+    # Merge the batch mosaic with the final mosaic
+    if (is.null(final_mosaic)) {
+      final_mosaic <- batch_mosaic
+    } else {
+      final_mosaic <- terra::mosaic(final_mosaic, 
+                                    batch_mosaic, 
+                                    fun = fun)
+    }
+    
+    # Clear temporary rasters and force garbage collection
+    rm(rsrc, batch_mosaic)
+    gc()
+    terra::tmpFiles(remove = TRUE)
+  }
+  
+  # Step 4: Write the final mosaic to disc
+  terra::writeRaster(final_mosaic, 
+                     filename = export_filename, 
+                     overwrite = TRUE)
+  
+  # Step 5: Return the final mosaic
+  return(final_mosaic)
+}
+
+
+
+
+
