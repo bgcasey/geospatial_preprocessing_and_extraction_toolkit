@@ -56,5 +56,4 @@ cd Z:/1_projects/geospatial_preprocessing_and_extraction_toolkit/scripts/preproc
 
 # clone PIWO and functions projects
 clone_gee_project "https://earthengine.googlesource.com/users/bgcasey/science_centre" true true
-clone_gee_project "https://earthengine.googlesource.com/users/bgcasey/functions" 
 
