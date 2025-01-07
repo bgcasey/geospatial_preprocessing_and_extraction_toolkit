@@ -52,6 +52,7 @@ mosaic_rasters_in_directory <- function(path_name, export_filename, fun = "mean"
   # Step 5: Clear rasters from memory
   rm(rsrc)
   gc() # Run garbage collection to ensure memory is freed
+  terra::tmpFiles(remove = TRUE)
   
   # Step 6: Write the mosaic to the specified export filename
   terra::writeRaster(m, filename = export_filename, 
@@ -111,6 +112,7 @@ mosaic_rasters_in_list <- function(raster_files, export_filename, fun = "mean") 
   # Step 4: Clear rasters from memory
   rm(rsrc)
   gc() # Run garbage collection to ensure memory is freed
+  terra::tmpFiles(remove = TRUE)
   
   # Step 5: Write the mosaic to the specified export filename
   terra::writeRaster(m, filename = export_filename, overwrite = TRUE)
