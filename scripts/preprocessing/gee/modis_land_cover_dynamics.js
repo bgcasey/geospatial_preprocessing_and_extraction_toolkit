@@ -17,7 +17,7 @@
  */
 
 /*  1.1 Import Required Modules */
-var utils = require("users/bgcasey/functions:utils");
+var utils = require("users/bgcasey/science_centre:functions/utils");
 
 /*  1.2 Define Constants and Area of Interest (AOI) */
 var aoi = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level1')

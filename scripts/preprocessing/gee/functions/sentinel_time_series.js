@@ -3,7 +3,7 @@
  * author: Brendan Casey
  * date: 2024-06-23
  * 
- * description:
+ * description: 
  * This script processes Sentinel-2 satellite imagery, calculates selected
  * vegetation indices, and merges the results into a single image collection
  * for a specified time period and area of interest (AOI). 
@@ -22,7 +22,7 @@
  
 // Import the required module for Sentinel-2 indices calculations
 var indices = require(
-  "users/bgcasey/functions:sentinel_indices_and_masks"
+  "users/bgcasey/science_centre:functions/sentinel_indices_and_masks"
 );
 
 /**
@@ -153,7 +153,7 @@ selectedIndices.forEach(function(index) {
 // // Usage example of s2_fn
 
 // var sentinel_time_series = require(
-//   "users/bgcasey/functions:sentinel_time_series"
+//   "users/bgcasey/science_centre:functions/sentinel_time_series"
 // );
 
 // // Define the AOI as an ee.Geometry object

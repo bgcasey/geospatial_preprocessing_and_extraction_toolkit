@@ -2,7 +2,7 @@
  * title: Sentinel-2 Indices and Masks Functions
  * author: Brendan Casey
  * date: 2024-06-01
- * 
+ *
  * description:
  * This script defines functions to calculate various spectral 
  * indices and apply masks to a time series of Sentinel-2 images. 
@@ -236,7 +236,7 @@ exports.addNDRS = function(image, forestTypes) {
   );
   
     // Load landcover data for the specified period
-  var forest_lc = require("users/bgcasey/functions:annual_forest_land_cover");
+  var forest_lc = require("users/bgcasey/science_centre:functions/annual_forest_land_cover");
   var lcCollection = forest_lc.lc_fn(startDate, endDate, aoi);
   var landcoverImage = ee.Image(lcCollection.first())
     .select('forest_lc_class');
@@ -332,7 +332,7 @@ exports.addRDI = function(image) {
  * @returns {ee.Image} The image with the added binary mask band.
  */
 exports.createBinaryMask = function(image) {
-  var masks = require("users/bgcasey/functions:masks");
+  var masks = require("users/bgcasey/science_centre:functions/masks");
   var maskedImage = masks.maskByLandcover(image).unmask(0);
   var band = maskedImage.select(bandName);
   var binaryMask = band.gt(threshold).rename('NDRS_stressed');

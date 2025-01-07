@@ -16,13 +16,13 @@
 
 /* Load helper functions */
 var utils = require(
-  "users/bgcasey/functions:utils"
+  "users/bgcasey/science_centre:functions/utils"
   );
 var landsatTimeSeries = require(
-  "users/bgcasey/functions:landsat_time_series"
+  "users/bgcasey/science_centre:functions/landsat_time_series"
   );
 var landsatIndicesAndMasks = require(
-  "users/bgcasey/functions:landsat_indices_and_masks"
+  "users/bgcasey/science_centre:functions/landsat_indices_and_masks"
   );
 
 /* Define area of interest (AOI) */

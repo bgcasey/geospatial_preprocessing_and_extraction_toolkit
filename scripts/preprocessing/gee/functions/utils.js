@@ -3,7 +3,7 @@
  * author: Brendan Casey
  * date: 2024-06-23
  * 
- * description:
+ * description: 
  * This script provides utility functions for satellite imagery and 
  * performing various geospatial analyses. The script includes functions 
  * to:
@@ -171,7 +171,7 @@ exports.createDateList = function createDateList(Date_Start, Date_End, interval,
 
 // Example usage of createTimeSeriesDateList function
 
-// var utils = require("users/bgcasey/functions:utils");
+// var utils = require("users/bgcasey/science_centre:functions/utils");
 
 // // Define the start and end dates for the time series
 // var Date_Start = ee.Date('2020-01-01');

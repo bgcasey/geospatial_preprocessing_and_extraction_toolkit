@@ -2,7 +2,7 @@
  * title: Get a Time Series of Landsat Images
  * author: Brendan Casey
  * date: 2024-06-23
- * 
+ *
  * description:
  * This script processes Landsat satellite imagery (Landsat 5, 7, 8, and 9),
  * harmonizes spectral reflectance values from different sensors,
@@ -26,7 +26,7 @@
 
 
 // Import the landsat indices and masks functions module
-var landsat = require("users/bgcasey/functions:landsat_indices_and_masks");
+var landsat = require("users/bgcasey/science_centre:functions/landsat_indices_and_masks");
 
 /**
  * Function to harmonizes Landsat 8 or 9 (OLI) to Landsat 7 (ETM+) spectral
@@ -60,12 +60,6 @@ var harmonize_OLI_to_ETM = function(image) {
                         .set('system:time_start', 
                              image.get('system:time_start'));
   
-  // Apply scale factors
-  harmonized = harmonized.multiply(0.0000275).add(-0.2);  
-  
-  // Constrain values to [0-1]
-  harmonized = harmonized.clamp(0,1);
-  
   // Preserve the QA_PIXEL band
   var qa_pixel = image.select('QA_PIXEL');
   return harmonized.addBands(qa_pixel, null, true);
@@ -92,6 +86,13 @@ var getHarmonizedLSCollection = function(startDate, endDate, sensor, aoi) {
   if (sensor === 'LC08' || sensor === 'LC09') {
     lsCollection = lsCollection.map(harmonize_OLI_to_ETM);
   }
+  
+  // Apply scaling function to all images
+  var scaleReflectance = function(image) {
+      return image.multiply(0.0000275).add(-0.2);
+  };
+
+  lsCollection = lsCollection.map(scaleReflectance);
 
   // Select relevant bands and add the QA_PIXEL band
   return lsCollection.map(function(img) {
@@ -251,7 +252,7 @@ exports.ls_fn = function(dates, interval, intervalType, aoi, selectedIndices, st
 
 // // Load function
 // var landsat_time_series = require(
-//   "users/bgcasey/functions:landsat_time_series"
+//   "users/bgcasey/science_centre:functions/landsat_time_series"
 // );
 
 // // Define the AOI as an ee.Geometry object

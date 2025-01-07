@@ -15,12 +15,12 @@
  */
 
 /* Load helper functions */
-var utils = require("users/bgcasey/functions:utils");
+var utils = require("users/bgcasey/science_centre:functions/utils");
 var sentinelTimeSeries = require(
-  "users/bgcasey/functions:sentinel_time_series"
+  "users/bgcasey/science_centre:functions/sentinel_time_series"
 );
 var sentinelIndicesAndMasks = require(
-  "users/bgcasey/functions:sentinel_indices_and_masks"
+  "users/bgcasey/science_centre:functions/sentinel_indices_and_masks"
 );
 
 /* Define area of interest (AOI) */
@@ -54,17 +54,17 @@ var aoi = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level1')
  * batches. Comment out the unused time periods.  
  */
  
-// var dateList = utils.createDateList(
-//   ee.Date('2019-06-01'), ee.Date('2020-06-01'), 1, 'years'
-// );
+var dateList = utils.createDateList(
+  ee.Date('2019-06-01'), ee.Date('2020-06-01'), 1, 'years'
+);
 
 // var dateList = utils.createDateList(
 //   ee.Date('2021-06-01'), ee.Date('2022-06-01'), 1, 'years'
 // );
 
-var dateList = utils.createDateList(
-  ee.Date('2023-06-01'), ee.Date('2024-06-01'), 1, 'years'
-);
+// var dateList = utils.createDateList(
+//   ee.Date('2023-06-01'), ee.Date('2024-06-01'), 1, 'years'
+// );
 
 print("Start Dates", dateList);
 
@@ -91,7 +91,8 @@ var statistic = 'mean'; // Options: 'mean', 'median', 'max', etc.
 // Generate Sentinel-2 Time Series
 var s2 = sentinelTimeSeries.s2_fn(
   dateList, 121, 'days', aoi,
-  ['CRE', 'DRS', 'DSWI', 'EVI', 'GNDVI', 'LAI', 'NBR', 'NDVI']
+  ['CRE', 'DRS', 'DSWI', 'EVI', 'GNDVI', 'LAI', 'NBR', 
+   'NDRE1', 'NDRE2', 'NDRE3', 'NDVI', 'NDWI', 'RDI']
 )
   .map(function(image) { 
     return sentinelIndicesAndMasks.addNDRS(image, [210]); // Coniferous 

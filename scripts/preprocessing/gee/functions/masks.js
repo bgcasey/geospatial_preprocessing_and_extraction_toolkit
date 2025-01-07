@@ -2,7 +2,7 @@
 // mask by forest age
 ////////////////////////
 
- 
+  
 // Define a function to mask an image by multiple landcover classes
 exports.maskByForestAge= function(image) {
   

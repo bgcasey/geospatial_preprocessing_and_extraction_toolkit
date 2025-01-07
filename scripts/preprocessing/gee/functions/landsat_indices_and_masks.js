@@ -238,7 +238,7 @@ exports.addNDRS = function(image, forestTypes) {
   );
   
   // Load landcover data for the specified period
-  var forest_lc = require("users/bgcasey/functions:annual_forest_land_cover");
+  var forest_lc = require("users/bgcasey/science_centre:functions/annual_forest_land_cover");
   var lcCollection = forest_lc.lc_fn(startDate, endDate, aoi);
   var landcoverImage = ee.Image(lcCollection.first())
     .select('forest_lc_class');
@@ -418,7 +418,7 @@ exports.maskFill = function(image) {
 // based on the NDRS index.
 
 // Import required masks module
-var masks = require("users/bgcasey/functions:masks");
+var masks = require("users/bgcasey/science_centre:functions/masks");
 
 // Define the band name and threshold for stressed pixel classification
 var bandName = 'NDRS';

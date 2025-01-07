@@ -6,7 +6,7 @@
  * description: Function to get annual landcover data from 
  * High-resolution Annual Forest Land Cover Maps for
  * Canada's Forested Ecosystems (1984-2019)
- * 
+ *
  * data citation: Hermosilla, T., Wulder, M.A., White, J.C.,
  * Coops, N.C., 2022. Land cover classification in an era
  * of big and open data: Optimizing localized implementation
