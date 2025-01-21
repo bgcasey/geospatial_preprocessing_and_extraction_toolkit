@@ -4,8 +4,6 @@
 
 <img src="https://drive.google.com/uc?id=1szqLViKqTX5C1XF8uV7HbIst0i6Xvv7g" alt="Logo" width="300">
 
-</br>
-
 # Geospatial Preprocessing and Extraction Toolkit 
 
 ![In Development](https://img.shields.io/badge/Status-In%20Development-yellow) 
@@ -29,6 +27,11 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 - Extracting raster values to point locations.
 - Summarizing raster data within polygons.
 - Getting raster summary statistics.
+
+### **Google Earth Engine Vignette**
+A [vignette](google_earth_engine_vignette.md) with instructions on how to setup GEE and load and run Science Centre scripts and helper functions [^1] from within the [Earth Engine Code Editor](code.earthengine.google.com) 
+
+
 ---
 
 ## Contents
