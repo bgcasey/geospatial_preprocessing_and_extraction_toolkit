@@ -18,26 +18,33 @@
 ## 1.1 Load required packages and functions ----
 library(terra)
 library(parallel)
-source("scripts/preprocessing/r/mosaic_rasters.R")
+source("scripts/preprocessing/r/mosaic_rasters_functions.R")
+
+# Set a custom temporary directory for terra
+# terraOptions(tempdir = "D:/r_temp")
 
 ## 1.2 Define input and output directories ----
 # Input directory containing raster files.
-input_directory <- "X:/samba/abmisc/spatial_data/temp/sentinel2_summer_mean_indices_2019_2024"
+input_directory <- "X:/samba/abmisc/spatial_data/temp/landsat_summer_mean_indices_2000_2024"
+# input_directory <- "X:/samba/abmisc/spatial_data/temp/test"
 
 # Output directory to save mosaicked rasters.
-output_directory <- "X:/samba/abmisc/spatial_data/imageryBaseMapsEarthCover/sentinel2_summer_mean_indices_2019_2024/"
+output_directory <- "X:/samba/abmisc/spatial_data/imageryBaseMapsEarthCover/landsat_summer_mean_indices_2000_2024/"
 if (!dir.exists(output_directory)) {
   dir.create(output_directory, recursive = TRUE)
 }
 
 # Define output file prefix
-output_file_prefix <- "sentinel2_summer_mean_"
+output_file_prefix <- "landsat_summer_mean_"
 
 ## 1.3 Set up parallel processing ----
-# Detect the number of available CPU cores.
-num_cores <- 16 # Reserve one core for system processes.
+# check the number of cores available
+detectCores()
 
-# Create a cluster using the available cores.
+# Set the number of cores
+num_cores <- 9 
+
+# Create a cluster
 cl <- makeCluster(num_cores)
 
 # Load required libraries on each worker

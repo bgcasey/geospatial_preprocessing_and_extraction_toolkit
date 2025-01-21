@@ -112,18 +112,16 @@ mosaic_rasters_in_list <- function(raster_files, export_filename, fun = "mean") 
   # Step 4: Clear rasters from memory
   rm(rsrc)
   gc() # Run garbage collection to ensure memory is freed
-  terra::tmpFiles(remove = TRUE)
   
   # Step 5: Write the mosaic to the specified export filename
   terra::writeRaster(m, filename = export_filename, overwrite = TRUE)
   
-  # Step 6: Return the created mosaic
+  # Step 6: Clean up temporary files created by terra
+  terra::tmpFiles(remove = TRUE)
+  
+  # Step 7: Return the created mosaic
   return(m)
 }
-
-
-
-
 
 
 
@@ -204,7 +202,7 @@ mosaic_rasters_in_batches <- function(raster_files, export_filename,
     # Clear temporary rasters and force garbage collection
     rm(rsrc, batch_mosaic)
     gc()
-    terra::tmpFiles(remove = TRUE)
+    
   }
   
   # Step 4: Write the final mosaic to disc
@@ -212,7 +210,10 @@ mosaic_rasters_in_batches <- function(raster_files, export_filename,
                      filename = export_filename, 
                      overwrite = TRUE)
   
-  # Step 5: Return the final mosaic
+  # Step 5: Clean up temporary files created by terra
+  terra::tmpFiles(remove = TRUE)
+  
+  # Step 6: Return the final mosaic
   return(final_mosaic)
 }
 
