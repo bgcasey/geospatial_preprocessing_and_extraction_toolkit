@@ -53,7 +53,7 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 | [functions/utils.js](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/gee/functions/utils.js) | Various utility functions for processing satellite imagery and performing various geospatial analyses. |
 | **R** | |
 | [mosaic_raster_time_series.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_raster_time_series.R) | Mosaics a time series of tiled raster files. |
-| [mosaic_rasters.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_rasters.R) | Functions to mosaic rasters from a directory or a list of files. |
+| [mosaic_rasters_functions.R](https://github.com/bgcasey/geospatial_preprocessing_and_extraction_toolkit/blob/main/scripts/preprocessing/r/mosaic_rasters_functions.R) | Functions to mosaic rasters from a directory or a list of files. |
 
 
 ---
