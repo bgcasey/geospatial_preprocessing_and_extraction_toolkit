@@ -31,20 +31,30 @@ exports.addBSI = function(image) {
 
 /**
  * Adds Disease Stress Water Index (DSWI) band to an image.
- * DSWI = (NIR + Green) / (Red + SWIR)
+ * DSWI = (NIR + Green) / (Red + SWIR + epsilon)
  * @param {Object} image - The image to process.
  * @returns {Object} The image with the DSWI band added.
+ * 
+ * Galvao, L. S., A. R. Formaggio, and D. A. Tisot. 2005.
+ * Discrimination of sugarcane varieties in Southeastern Brazil
+ * with EO-1 Hyperion data. Remote Sens. Environ. 94, 523–
+ * 534.
  */
 exports.addDSWI = function(image) {
   var DSWI = image.expression(
-    '(NIR + Green) / (Red + SWIR)', {
+    '(NIR + Green) / (SWIR + Red)', {
       'NIR': image.select('SR_B4'),
       'Green': image.select('SR_B2'),
-      'Red': image.select('SR_B3'),
       'SWIR': image.select('SR_B5'),
+      'Red': image.select('SR_B3')
     }).rename('DSWI');
-  return image.addBands([DSWI]);
+  // Clamp DSWI to [0, 3].
+  var DSWI_clamped = DSWI.clamp(0, 3);
+  
+  // Add the clamped EVI band to the original image.
+  return image.addBands(DSWI_clamped);
 };
+
 
 /**
  * Adds Distance Red & SWIR (DRS) band to an image.
@@ -68,13 +78,21 @@ exports.addDRS = function(image) {
  * @returns {Object} The image with the EVI band added.
  */
 exports.addEVI = function(image) {
+  
+  // Calculate EVI from Surface Reflectance bands:
   var EVI = image.expression(
     '2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))', {
       'NIR': image.select('SR_B4'),
       'RED': image.select('SR_B3'),
       'BLUE': image.select('SR_B1')
-    }).rename('EVI');
-  return image.addBands([EVI]);
+    }
+  ).rename('EVI');
+  
+  // Clamp EVI to [-2, 2].
+  var EVI_clamped = EVI.clamp(-2, 2);
+  
+  // Add the clamped EVI band to the original image.
+  return image.addBands(EVI_clamped);
 };
 
 
@@ -349,11 +367,14 @@ exports.mask_cloud_snow = function(image) {
   var cloudsBitMask = 1 << 3; // Cloud mask
   var cloudShadowBitMask = 1 << 4; // Cloud shadow mask
   var snowBitMask = 1 << 5; // Snow mask
-  var mask = qa.bitwiseAnd(cloudsBitMask).eq(0)
-             .and(qa.bitwiseAnd(cloudShadowBitMask).eq(0))
-             .and(qa.bitwiseAnd(snowBitMask).eq(0));
+  // Create the mask
+  var mask = qa.bitwiseAnd(cloudsBitMask).eq(0) // No clouds
+             .and(qa.bitwiseAnd(cloudShadowBitMask).eq(0)) // No shadows
+             .and(qa.bitwiseAnd(snowBitMask).eq(0)); // No snow
+  // Apply mask
   return image.updateMask(mask);
 };
+
 
 /**
  * Masks clouds from Landsat images.
@@ -368,6 +389,30 @@ exports.mask_cloud = function(image) {
              .and(qa.bitwiseAnd(cloudShadowBitMask).eq(0));
   return image.updateMask(mask);
 };
+
+/**
+ * Masks out negative values in specified surface reflectance bands.
+ * @param {ee.Image} image - The input image to process.
+ * @returns {ee.Image} The image with negative values masked in
+ * SR_B1 to SR_B7.
+ */
+exports.mask_negative_surface_reflectance = function(image) {
+  // List of surface reflectance bands to mask
+  var bandsToMask = [
+    'SR_B1', 'SR_B2', 'SR_B3', 
+    'SR_B4', 'SR_B5', 'SR_B7'
+  ];
+  
+  // Create a mask where all values in the specified bands are >= 0
+  var mask = image.select(bandsToMask)
+                  .reduce(ee.Reducer.min())
+                  .gte(0);
+  
+  // Apply the mask and retain original metadata
+  return image.updateMask(mask)
+              .copyProperties(image, image.propertyNames());
+};
+
 
 /**
  * Adds a snow band based on NDSI values to an image.

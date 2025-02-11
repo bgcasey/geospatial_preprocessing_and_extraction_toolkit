@@ -27,7 +27,7 @@
 
 // Import the landsat indices and masks functions module
 var landsat = require("users/bgcasey/science_centre:functions/landsat_indices_and_masks");
-
+var gap_filling = require("users/bgcasey/science_centre:functions/gap_filling")
 /**
  * Function to harmonizes Landsat 8 or 9 (OLI) to Landsat 7 (ETM+) spectral
  * reflectance values using reduced major axis (RMA) regression
@@ -93,6 +93,9 @@ var getHarmonizedLSCollection = function(startDate, endDate, sensor, aoi) {
   };
 
   lsCollection = lsCollection.map(scaleReflectance);
+  
+  // Apply the negative value mask
+  lsCollection = lsCollection.map(landsat.mask_negative_surface_reflectance);
 
   // Select relevant bands and add the QA_PIXEL band
   return lsCollection.map(function(img) {
@@ -141,7 +144,7 @@ var getCombinedHarmonizedCollection = function(startDate, endDate, aoi) {
       )
     )
   );
-  
+
   return combinedCollection;
 };
 
@@ -230,8 +233,24 @@ exports.ls_fn = function(dates, interval, intervalType, aoi, selectedIndices, st
     });
     reducedImage = reducedImage.rename(renamedBands);
     
+    // Mask for missing pixels (where mask is 0)
+    var missingPixelsMask = reducedImage.mask().not();
+    
+    // Apply Gaussian spline interpolation to missing pixels
+    var interpolatedImage = reducedImage.focal_mean({
+      kernel: ee.Kernel.gaussian({
+        radius: 3,  // Gaussian kernel radius
+        sigma: 1,   // Gaussian kernel standard deviation
+        units: 'pixels'
+      }),
+      iterations: 1 // Apply the smoothing iteratively
+    }).updateMask(missingPixelsMask); // Interpolate only missing pixels
+    
+    // Combine original and interpolated images
+    var combinedImage = reducedImage.unmask(interpolatedImage);
+
     // Set metadata for the reduced image
-    return reducedImage.set({
+    return combinedImage.set({
       "start_date": start.format('YYYY-MM-dd'), 
       "end_date": end.format('YYYY-MM-dd'), 
       "month": start.get('month'), 

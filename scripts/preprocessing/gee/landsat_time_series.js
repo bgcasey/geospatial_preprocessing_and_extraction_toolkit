@@ -56,9 +56,10 @@ var aoi = ee.FeatureCollection('FAO/GAUL_SIMPLIFIED_500m/2015/level1')
  * Alberta wide images, time series are generated in five year
  * batches. Comment out the unused time periods.  
  */
+
  
 var dateList = utils.createDateList(
-  ee.Date('2000-06-01'), ee.Date('2005-06-01'), 1, 'years'
+  ee.Date('2001-06-01'), ee.Date('2005-06-01'), 1, 'years'
 );
 
 // var dateList = utils.createDateList(
@@ -81,6 +82,7 @@ print("Start Dates", dateList);
 
 /* Define reducer statistic */
 var statistic = 'mean'; // Choose from 'mean', 'median', 'max', etc.
+
 
 /* 2. Landsat Time Series Processing
  * Calculate user-defined spectral indices for Landsat imagery.
@@ -133,35 +135,28 @@ var ls = landsatTimeSeries.ls_fn(
 
 // print("Landsat Time Series:", ls);
 
-
 /* 3. Check Calculated Bands
  * Review to make sure calculations and indices appear 
  * correct.
  */
 
-// /* 3.1 Check band summary statistics
-// * For each band calculate the min, max, and 
-// * standard deviation of pixel values and print to console.
-// * Check for values outside the expected range.
-// */
+/* 3.1 Check band summary statistics
+* For each band calculate the min, max, and 
+* standard deviation of pixel values and print to console.
+* Check for values outside the expected range.
+*/
 
-// /* Extract the first image in the time-series*/
-// var image_first = ls.first();
-// print('First Image in the Time-series:', image_first);
+/* Calculate summary statistics for the image collection */
+// var reducer = ee.Reducer.min()
+//   .combine(ee.Reducer.max(), '', true);
 
-// /* Calculate summary statistics for 2024 image */
-// var stats_first = image_first.reduceRegion({
-//   reducer: ee.Reducer.min()
-//     .combine(ee.Reducer.max(), '', true)
-//     // .combine(ee.Reducer.mean(), '', true)
-//     // .combine(ee.Reducer.median(), '', true)
-//     .combine(ee.Reducer.stdDev(), '', true),
-//   geometry: aoi,
-//   scale: 50000,
-//   bestEffort: true,
-//   maxPixels: 1e13
-// });
-// print('Summary Statistics for First Image:', stats_first);
+// var collectionStats = utils.calculateImageCollectionStats(ls, 
+//                                                         aoi, 
+//                                                         1000, 
+//                                                         1e13, 
+//                                                         reducer);
+// print(collectionStats, "image stats")
+// utils.exportStatsToCSV(collectionStats, 'image_stats');
 
 // /* 3.2 Check band data types
 // * Bands need to be the same data type in order to export 
@@ -178,10 +173,12 @@ var ls = landsatTimeSeries.ls_fn(
 
 // // Define visualization parameters for NDVI
 // var ndviVisParams = {
-//   min: -0.1, // Lower limit for NDVI values
+//   min: -0.5, // Lower limit for NDVI values
 //   max: 1.0,  // Upper limit for NDVI values
 //   palette: ['blue', 'white', 'green'] // Color palette
 // };
+
+// var image_first = ls.first();
 
 // // Extract the NDVI band from the 2024 image
 // var ndvi_first = image_first.select('NDVI');
@@ -189,14 +186,21 @@ var ls = landsatTimeSeries.ls_fn(
 // // Reduce resolution for visualization
 // var ndvi_firstLowRes = ndvi_first.reproject({
 //   crs: ndvi_first.projection(),
-//   scale: 100
+//   scale: 2000
 // });
 
 // // Center the map on the area of interest (AOI)
-// Map.centerObject(aoi, 9);
+// Map.centerObject(aoi, 7);
 
 // // Add the low-resolution NDVI layer to the map
 // Map.addLayer(ndvi_firstLowRes, ndviVisParams, 'NDVI (Low Res)');
+
+
+// // Create a mask where valid (non-missing) pixels are 1, and missing pixels are 0
+// var missingPixelsMask = ndvi_first.mask().not();
+
+// // Visualize the missing pixels
+// Map.addLayer(missingPixelsMask, {min: 0, max: 1, palette: ['white', 'black']}, 'Missing Pixels');
 
 
 /* 4. Export Time Series to Google Drive

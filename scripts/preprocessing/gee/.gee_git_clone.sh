@@ -28,7 +28,8 @@ clone_gee_project() {
 
   # Clone the project from the provided URL.
   git clone "$url"
-
+  echo "GIT CLONE EXIT CODE: $?"
+  
   # Remove the .git directory.
   rm -rf "$project/.git"
   

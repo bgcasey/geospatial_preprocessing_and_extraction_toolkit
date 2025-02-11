@@ -775,3 +775,101 @@ exports.exportImageCollection = exportImageCollection;
 
 // // Call the function to export all images as multiband images
 // exportImageCollection(ls, aoi, folder, scale, crs, fileNameFn);
+
+
+
+
+/**
+ * Calculate Image Statistics
+ * 
+ * Calculates statistics for a single image within a specified 
+ * geometry using a provided reducer.
+ * 
+ * @param {ee.Image} image - The image for which statistics 
+ * will be calculated.
+ * @param {ee.Geometry} geometry - The geometry defining the 
+ * area of interest.
+ * @param {number} scale - The scale (in meters) for the reducer.
+ * @param {number} maxPixels - The maximum number of pixels to 
+ * process.
+ * @param {ee.Reducer} reducer - The reducer to calculate 
+ * statistics.
+ * @return {ee.Dictionary} An object containing the calculated 
+ * statistics.
+ * 
+ * @example
+ * var stats = calculateImageStats(image, aoi, 50000, 1e13, 
+ * reducer);
+ * print(stats);
+ */
+function calculateImageStats(image, geometry, scale, maxPixels, reducer) {
+  return image.reduceRegion({
+    reducer: reducer,
+    geometry: geometry,
+    scale: scale,
+    bestEffort: true,
+    maxPixels: maxPixels
+  });
+}
+exports.calculateImageStats = calculateImageStats;
+
+
+/**
+ * Calculate Stats for Image Collection
+ * 
+ * Computes statistics for all images in a collection within a 
+ * specified geometry and appends them as properties to each 
+ * image.
+ * 
+ * @param {ee.ImageCollection} collection - The collection of 
+ * images.
+ * @param {ee.Geometry} geometry - The geometry defining the 
+ * area of interest.
+ * @param {number} scale - The scale (in meters) for the reducer.
+ * @param {number} maxPixels - The maximum number of pixels to 
+ * process.
+ * @param {ee.Reducer} reducer - The reducer to calculate 
+ * statistics.
+ * @return {ee.ImageCollection} The image collection with 
+ * appended statistics.
+ * 
+ * @example
+ * var reducer = ee.Reducer.min()
+  .combine(ee.Reducer.max(), '', true)
+ * var collectionStats = calculateImageCollectionStats(
+ * imageCollection, aoi, 50000, 1e13, reducer);
+ * print(collectionStats);
+ */
+function calculateImageCollectionStats(collection, geometry, scale, maxPixels, reducer) {
+  return collection.map(function(image) {
+    var stats = calculateImageStats(image, geometry, scale, maxPixels, reducer);
+    return image.set(stats);
+  });
+}
+exports.calculateImageCollectionStats = calculateImageCollectionStats;
+
+/**
+ * Export Stats to CSV
+ * 
+ * Exports a feature collection containing image statistics to 
+ * a CSV file in Google Drive.
+ * 
+ * @param {ee.FeatureCollection} statsCollection - The feature 
+ * collection containing statistics.
+ * @param {string} fileName - The name of the CSV file.
+ * 
+ * @example
+ * exportStatsToCSV(collectionStats, 'image_stats');
+ */
+function exportStatsToCSV(statsCollection, fileName) {
+  Export.table.toDrive({
+    collection: statsCollection,
+    description: fileName,
+    folder: 'gee_tables',         
+    fileFormat: 'CSV'
+  });
+}
+exports.exportStatsToCSV = exportStatsToCSV;
+
+
+
