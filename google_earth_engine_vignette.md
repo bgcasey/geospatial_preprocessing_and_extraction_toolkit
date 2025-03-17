@@ -6,37 +6,21 @@ This vignette describes how to setup GEE and load and run the ABMI Science Centr
 ---
 
 ## Table of Contents
-
+- [Accessing Google Earth Engine JavaScript Files](#accessing-google-earth-engine-javascript-files)
 - [Landsat Time Series](#landsat-time-series)
   - [1. Setup](#1-setup)
-    - [Load Helper Functions](#load-helper-functions)
-    - [Define Area of Interest (AOI)](#define-area-of-interest-aoi)
-    - [Create Date List for Time Series](#create-date-list-for-time-series)
-    - [Define Reducer Statistic](#define-reducer-statistic)
   - [2. Landsat Time Series Processing](#2-landsat-time-series-processing)
   - [3. Check Calculated Bands](#3-check-calculated-bands)
-    - [3.1 Check Band Summary Statistics](#31-check-band-summary-statistics)
-    - [3.2 Check Band Data Types](#32-check-band-data-types)
-    - [3.3 Visualize NDVI](#33-visualize-ndvi)
   - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive)
 
 - [Sentinel-2 Time Series](#sentinel-2-time-series)
   - [1. Setup](#1-setup-1)
-    - [Load Helper Functions](#load-helper-functions-1)
-    - [Define Area of Interest (AOI)](#define-area-of-interest-aoi-1)
-    - [Create Date List for Time Series](#create-date-list-for-time-series-1)
-    - [Define Reducer Statistic](#define-reducer-statistic-1)
   - [2. Sentinel-2 Time Series Processing](#2-sentinel-2-time-series-processing)
   - [3. Check Calculated Bands](#3-check-calculated-bands-1)
-    - [3.1 Check Band Summary Statistics](#31-check-band-summary-statistics-1)
-    - [3.2 Check Band Data Types](#32-check-band-data-types-1)
-    - [3.3 Visualize NDVI](#33-visualize-ndvi-1)
   - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive-1)
 
 - [MODIS Annual Land Cover Dynamics (2001-2023)](#modis-annual-land-cover-dynamics-2001-2023)
   - [1. Setup](#1-setup-2)
-    - [Load Helper Functions](#load-helper-functions-2)
-    - [Define Area of Interest (AOI)](#define-area-of-interest-aoi-2)
   - [2. Load MODIS MCD12Q2 Dataset](#2-load-modis-mcd12q2-dataset)
   - [3. Check Processed Bands](#3-check-processed-bands)
   - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive-2)
