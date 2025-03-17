@@ -1,37 +1,39 @@
 
-# Landsat and Sentinel-2 Time Series Analysis Vignette
 
 This vignette describes how to setup GEE and load and run the ABMI Science Centre scripts and helper functions [^1] from within the [Earth Engine Code Editor](code.earthengine.google.com). It describes methoids for processing MODIS, Landsat, and Sentinel-2 satellite imagery using Google Earth Engine (GEE). It demonstrates how to calculate vegetation indices, analyze band statistics, visualize data, and export results to Google Drive. 
 
 ---
 
+
 ## Table of Contents
-- [Accessing Google Earth Engine JavaScript Files](#accessing-google-earth-engine-javascript-files)
-- [Landsat Time Series](#landsat-time-series)
-  - [1. Setup](#1-setup)
-  - [2. Landsat Time Series Processing](#2-landsat-time-series-processing)
-  - [3. Check Calculated Bands](#3-check-calculated-bands)
-  - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive)
-
-- [Sentinel-2 Time Series](#sentinel-2-time-series)
-  - [1. Setup](#1-setup-1)
-  - [2. Sentinel-2 Time Series Processing](#2-sentinel-2-time-series-processing)
-  - [3. Check Calculated Bands](#3-check-calculated-bands-1)
-  - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive-1)
-
-- [MODIS Annual Land Cover Dynamics (2001-2023)](#modis-annual-land-cover-dynamics-2001-2023)
-  - [1. Setup](#1-setup-2)
-  - [2. Load MODIS MCD12Q2 Dataset](#2-load-modis-mcd12q2-dataset)
-  - [3. Check Processed Bands](#3-check-processed-bands)
-  - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive-2)
-
+- [1. Accessing Google Earth Engine JavaScript Files](#1-accessing-google-earth-engine-javascript-files)
+  - [1.1 Adding Scripts to the GEE Code Editor](#11-adding-scripts-to-the-gee-code-editor)
+  - [1.2 Editing Scripts](#12-editing-scripts)
+  - [1.3 Understanding Script Dependencies](#13-understanding-script-dependencies)
+- [2. Landsat Time Series](#2-landsat-time-series)
+  - [2.1 Setup](#21-setup)
+  - [2.2 Landsat Time Series Processing](#22-landsat-time-series-processing)
+  - [2.3 Check Calculated Bands](#23-check-calculated-bands)
+  - [2.4 Export Time Series to Google Drive](#24-export-time-series-to-google-drive)
+- [3. Sentinel-2 Time Series](#3-sentinel-2-time-series)
+  - [3.1 Setup](#31-setup)
+  - [3.2 Sentinel-2 Time Series Processing](#32-sentinel-2-time-series-processing)
+  - [3.3 Check Calculated Bands](#33-check-calculated-bands)
+  - [3.4 Export Sentinel-2 Time Series to Google Drive](#34-export-sentinel-2-time-series-to-google-drive)
+- [4. MODIS Annual Land Cover Dynamics (2001-2023)](#4-modis-annual-land-cover-dynamics-2001-2023)
+  - [4.1 Setup](#41-setup)
+  - [4.2 Load MODIS MCD12Q2 Dataset](#42-load-modis-mcd12q2-dataset)
+  - [4.3 Apply Scaling to Dataset](#43-apply-scaling-to-dataset)
+  - [4.3 Check Processed Bands](#43-check-processed-bands)
+  - [4.4 Export Time Series to Google Drive](#44-export-time-series-to-google-drive)
+  
 ---
 
-# Accessing Google Earth Engine JavaScript Files
+# 1. Accessing Google Earth Engine JavaScript Files
 
 JavaScript files for processing Landsat, Sentinel-2, and MODIS imagery can be accessed and used directly in the Google Earth Engine (GEE) Code Editor. The scripts are read-only but can be referenced or copied into your own GEE repositories for modification.
 
-### Adding Scripts to the GEE Code Editor
+## 1.1 Adding Scripts to the GEE Code Editor
 
 To use the provided scripts, visit the following link:
 
@@ -44,7 +46,7 @@ This will automatically add the repository to your GEE Code Editor under the **R
 - `sentinel_time_series.js`: Main script for processing Sentinel-2 imagery.
 - `modis_time_series.js`: Main script for processing MODIS land cover dynamics.
 
-### Editing Scripts
+## 1.2 Editing Scripts
 
 The provided scripts are **read-only**. To modify them:
 
@@ -53,7 +55,7 @@ The provided scripts are **read-only**. To modify them:
 3. **Paste the Code**: Paste the copied code into the new script file.
 4. **Save to Your Repo**: Save the new script to your own repository for editing and execution.
 
-### Understanding Script Dependencies
+## 1.3 Understanding Script Dependencies
 
 The main scripts (e.g., `landsat_time_series.js` and `sentinel_time_series.js`) depend on helper functions located in the `functions/` folder. These helper functions are imported at the beginning of each main script. For example:
 
@@ -69,19 +71,19 @@ var landsatIndicesAndMasks = require("users/bgcasey/science_centre:functions/lan
 
 The helper functions all contain descriptions and example code.
 
-### Best Practices for Script Management
+## 1.4 Best Practices for Script Management
 - **Keep Helper Functions Modular**: When copying scripts into your repository, maintain the folder structure and keep helper functions separate for better organization and easier debugging.
 - **Test in Small AOIs First**: If modifying processing parameters or functions, run the scripts on smaller areas of interest (AOIs) to minimize processing time and avoid timeouts.
 
 ---
 
 
-# Landsat Time Series
+# 2. Landsat Time Series
 Below is a simple, step-by-step guide to processing Landsat satellite imagery using Google Earth Engine (GEE) and the landsat_time_series.js script found in [https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre](https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre). The following code snippets are meant to be copied into the GEE code editor.
 
-## 1. Setup
+## 2.1 Setup
 
-### Load Helper Functions
+### 2.1.1 Load Helper Functions
 
 Load helper functions to simplify various tasks like date generation, image processing, and exporting results.
 
@@ -109,7 +111,7 @@ var landsatTimeSeries = require("users/bgcasey/science_centre:functions/landsat_
 var landsatIndicesAndMasks = require("users/bgcasey/science_centre:functions/landsat_indices_and_masks");
 ```
 
-### Define Area of Interest (AOI)
+### 2.1.2 Define Area of Interest (AOI)
 
 This section sets the geographic area for analysis. The time series of Landsat images will be extracted for this region. The following code defines and area of interest around Calling Lake, Alberta, Canada.
 
@@ -122,7 +124,7 @@ var aoi = ee.Geometry.Polygon([
 ]);
 ```
 
-### Create Date List for Time Series
+### 2.1.3 Create Date List for Time Series
 
 Use the `utils.createDateList` function create a list of starting points for time intervals used to extract a time series of satelite images. The `createDateList` function generates a list of dates at a specified interval, beginning on the provided start date and ending on the end date. 
 
@@ -143,7 +145,7 @@ var dateList = utils.createDateList(
 );
 print("Start Dates", dateList);
 ```
-### Define Reducer Statistic
+### 2.1.4 Define Reducer Statistic
 
 Specifies how to summarize pixel values over time. Options include 'mean', 'median', 'max', etc.
 
@@ -151,9 +153,9 @@ Specifies how to summarize pixel values over time. Options include 'mean', 'medi
 var statistic = 'mean'; // Options: 'mean', 'median', 'max', etc.
 ```
 
-## 2. Landsat Time Series Processing
+## 2.2 Landsat Time Series Processing
 
-### Calculate Spectral Indices
+### 2.2.1 Calculate Spectral Indices
 
 The `landsatTimeSeries.ls_fn` function processes Landsat images and calculates various spectral indices over the dates defined in `var dateList`.
 
@@ -206,10 +208,10 @@ var ls = landsatTimeSeries.ls_fn(
 //print("Landsat Time Series:", ls);  
 ```
 
-## 3. Check Calculated Bands
+## 2.3 Check Calculated Bands
 
 Here users can view summary statistics calculated incices and view them in the map viewer window.
-### 3.1 Check Band Summary Statistics
+### 2.3.1 Check Band Summary Statistics
 
 For each band in the image collection, calculate summary statistics (minimum, maximum, and standard deviation) to ensure values fall within expected ranges.
 
@@ -225,7 +227,7 @@ print(collectionStats, "Image Statistics");
 utils.exportStatsToCSV(collectionStats, 'image_stats');
 ```
 
-### 3.2 Check Band Data Types
+### 2.3.2 Check Band Data Types
 
 Ensure all bands have consistent data types. All bands need to be the same data type  to be exported as multiband rasters.
 
@@ -235,7 +237,7 @@ print("Band Names", image_first.bandNames());
 print("Band Types", image_first.bandTypes());
 ```
 
-### 3.3 Visualize NDVI
+### 2.3.3 Visualize NDVI
 
 Visualize the NDVI for the first image in the collection.
 
@@ -264,7 +266,7 @@ Map.addLayer(missingPixelsMask, {min: 0, max: 1, palette: ['white', 'black']}, '
 ```
 
 
-## 4. Export Time Series to Google Drive
+## 2.4 Export Time Series to Google Drive
 
 This section demonstrates how to export each image in the processed collection as multiband GeoTIFFs to Google Drive by using the function `utils.exportImageCollection`.
 
@@ -309,13 +311,13 @@ utils.exportImageCollection(ls, aoi, folder, scale, crs, fileNameFn);
 
 ---
 
-# Sentinel-2 Time Series
+# 3. Sentinel-2 Time Series
 
 Below is a simple, step-by-step guide to processing Sentinel-2 satellite imagery using Google Earth Engine (GEE) and the sentinel_time_series.js script found in https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre. The following code snippets are designed to be copied into the GEE code editor for streamlined analysis.
 
-### 1. Setup
+### 3.1 Setup
 
-#### Load Helper Functions
+#### 3.1.1 Load Helper Functions
 
 Load helper functions to simplify tasks like date generation, image processing, and exporting results.
 
@@ -345,7 +347,7 @@ var sentinelTimeSeries = require("users/bgcasey/science_centre:functions/sentine
 var sentinelIndicesAndMasks = require("users/bgcasey/science_centre:functions/sentinel_indices_and_masks");
 ```
 
-#### Define Area of Interest (AOI)
+####  3.1.2 Define Area of Interest (AOI)
 
 This section sets the geographic area for analysis. The time series of Landsat images will be extracted for this region. The following code defines and area of interest around Calling Lake, Alberta, Canada.
 
@@ -358,7 +360,7 @@ var aoi = ee.Geometry.Polygon([
 ]);
 ```
 
-#### Create Date List for Time Series
+#### 3.1.3 Create Date List for Time Series
 
 Generate a list of start dates for the time intervals used in the time series analysis.
 
@@ -369,7 +371,7 @@ var dateList = utils.createDateList(
 print("Start Dates", dateList);
 ```
 
-#### Define Reducer Statistic
+#### 3.1.4 Define Reducer Statistic
 
 Specify the statistic to summarize pixel values over each time interval.
 
@@ -377,7 +379,7 @@ Specify the statistic to summarize pixel values over each time interval.
 var statistic = 'mean';
 ```
 
-### 2. Sentinel-2 Time Series Processing
+### 3.2 Sentinel-2 Time Series Processing
 
 Calculate selected spectral indices for each time interval using the `sentinelTimeSeries.s2_fn` function. The `sentinelTimeSeries.s2_fn` function processes Sentinel-2 imagery over a series of time intervals, calculating selected vegetation indices for each period and merging the results into a single image collection.
 
@@ -420,9 +422,9 @@ var s2 = sentinelTimeSeries.s2_fn(
 });
 ```
 
-### 3. Check Calculated Bands
+### 3.3 Check Calculated Bands
 
-#### 3.1 Check Band Summary Statistics
+#### 3.3.1 Check Band Summary Statistics
 
 ```javascript
 var image_first = s2.first();
@@ -438,14 +440,14 @@ var stats_first = image_first.reduceRegion({
 print('Summary Statistics for First Image:', stats_first);
 ```
 
-#### 3.2 Check Band Data Types
+#### 3.3.2 Check Band Data Types
 
 ```javascript
 print("Band Names", image_first.bandNames());
 print("Band Types", image_first.bandTypes());
 ```
 
-#### 3.3 Visualize NDVI
+#### 3.3.3 Visualize NDVI
 
 ```javascript
 var ndviVisParams = {
@@ -464,7 +466,7 @@ Map.centerObject(aoi, 9);
 Map.addLayer(ndvi_firstLowRes, ndviVisParams, 'NDVI (Low Res)');
 ```
 
-### 4. Export Sentinel-2 Time Series to Google Drive
+### 3.4 Export Sentinel-2 Time Series to Google Drive
 
 Use the `exportImageCollection` function to export each image in the ImageCollection to Google Drive.
 
@@ -491,13 +493,13 @@ utils.exportImageCollection(s2, aoi, folder, scale, crs, fileNameFn);
 ```
 ---
 
-# MODIS Annual Land Cover Dynamics (2001-2023)
+# 4. MODIS Annual Land Cover Dynamics (2001-2023)
 
-## 1. Setup
+## 4.1 Setup
 
 This section prepares the environment, defines the Area of Interest (AOI), and loads the necessary helper functions.
 
-### Load Helper Functions
+### 4.1.1 Load Helper Functions
 
 Import the utility functions to assist with tasks such as exporting image collections.
 
@@ -505,7 +507,7 @@ Import the utility functions to assist with tasks such as exporting image collec
 var utils = require("users/bgcasey/science_centre:functions/utils");
 ```
 
-### Define Area of Interest (AOI)
+### 4.1.2 Define Area of Interest (AOI)
 
 Specify the geographic region for analysis. 
 
@@ -518,11 +520,11 @@ var aoi = ee.Geometry.Polygon([
 ]);
 ```
 
-## 2. Load MODIS MCD12Q2 Dataset
+## 4.2 Load MODIS MCD12Q2 Dataset
    
 This section demonstrates how to load and preprocess the MODIS MCD12Q2 dataset for the period 2021–2023.
 
-#### Load and Clip Dataset
+### 4.2.1 Load and Clip Dataset
 
 The dataset is filtered by date and clipped to the defined AOI. The year is extracted and added as metadata.
 
@@ -535,7 +537,7 @@ var dataset = ee.ImageCollection('MODIS/061/MCD12Q2')
   });
 ```
 
-### Apply Scaling Factors to Bands
+### 4.2.2 Apply Scaling Factors to Bands
 
 Scaling factors are applied to selected bands to convert them into meaningful units.
 ```js
@@ -556,7 +558,7 @@ dataset = dataset.map(applyScaling);
 
 ```
 
-### Convert Bands to Float32
+### 4.2.3 Convert Bands to Float32
 
 Ensure all bands are consistent in data type for export.
 
@@ -569,9 +571,9 @@ dataset = dataset.map(convertToFloat);
 ```
 
 
-## 3. Check Processed Bands
+## 4.3 Check Processed Bands
 
-### Visualize Vegetation Peak Band for 2023
+### 4.3.1 Visualize Vegetation Peak Band for 2023
 
 Visualize the `Peak_1` band in the map viewer.
 
@@ -588,7 +590,7 @@ Map.setCenter(-113.0, 55.25, 8);
 Map.addLayer(vegetationPeak, vegetationPeakVis, 'Vegetation Peak 2023');
 ```
 
-###  Calculate summary statistics 
+### 4.3.2 Calculate summary statistics 
 
 Print summary statistics to verify value ranges.
 
@@ -609,11 +611,11 @@ dataset.filter(ee.Filter.date('2023-01-01', '2023-12-31'))
   });
 ```
 
-## 4. Export Time Series to Google Drive
+## 4.4 Export Time Series to Google Drive
 
 This section shows how to export each annual image as a multiband GeoTIFF to Google Drive.
 
-### Define Export Parameters
+### 4.4.1 Define Export Parameters
 
 ```js
 var folder = 'gee_exports';
@@ -621,7 +623,7 @@ var scale = 500;
 var crs = 'EPSG:4326';
 ```
 
-### Define File Naming Function
+### 4.4.2 Define File Naming Function
 
 Create custom file names based on the image year.
 
@@ -632,7 +634,7 @@ var fileNameFn = function(img) {
 };
 ```
 
-#### Export Image Collection
+####  4.4.3 Export Image Collection
 
 ```js
 utils.exportImageCollection(dataset, aoi, folder, scale, crs, fileNameFn);
