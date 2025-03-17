@@ -1,6 +1,12 @@
+<!--
+<img src="https://drive.google.com/uc?id=1fgYuG7jpnekZrkoL_PdVUnSiUFBFX-vI" alt="Logo" width="150" style="float: left; margin-right: 10px;">
+-->
 
+<img src="https://drive.google.com/uc?id=1szqLViKqTX5C1XF8uV7HbIst0i6Xvv7g" alt="Logo" width="300">
 
-This vignette describes how to setup GEE and load and run the ABMI Science Centre scripts and helper functions [^1] from within the [Earth Engine Code Editor](code.earthengine.google.com). It describes methoids for processing MODIS, Landsat, and Sentinel-2 satellite imagery using Google Earth Engine (GEE). It demonstrates how to calculate vegetation indices, analyze band statistics, visualize data, and export results to Google Drive. 
+# Processing Remote Sensing Data with Google Earth Engine
+
+This vignette describes how to setup GEE and load and run the ABMI Science Centre scripts and helper functions [^1] from within the [Google Earth Engine Code Editor](code.earthengine.google.com). It describes methoids for processing MODIS, Landsat, and Sentinel-2 satellite imagery using Google Earth Engine (GEE). It demonstrates how to calculate vegetation indices, analyze band statistics, visualize data, and export results to Google Drive. 
 
 ---
 
