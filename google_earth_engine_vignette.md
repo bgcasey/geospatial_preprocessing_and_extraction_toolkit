@@ -1,5 +1,47 @@
 
-This vignette describes... 
+# Landsat and Sentinel-2 Time Series Analysis Vignette
+
+This vignette describes how to setup GEE and load and run the ABMI Science Centre scripts and helper functions [^1] from within the [Earth Engine Code Editor](code.earthengine.google.com). It describes methoids for processing MODIS, Landsat, and Sentinel-2 satellite imagery using Google Earth Engine (GEE). It demonstrates how to calculate vegetation indices, analyze band statistics, visualize data, and export results to Google Drive. 
+
+---
+
+## Table of Contents
+
+- [Landsat Time Series](#landsat-time-series)
+  - [1. Setup](#1-setup)
+    - [Load Helper Functions](#load-helper-functions)
+    - [Define Area of Interest (AOI)](#define-area-of-interest-aoi)
+    - [Create Date List for Time Series](#create-date-list-for-time-series)
+    - [Define Reducer Statistic](#define-reducer-statistic)
+  - [2. Landsat Time Series Processing](#2-landsat-time-series-processing)
+  - [3. Check Calculated Bands](#3-check-calculated-bands)
+    - [3.1 Check Band Summary Statistics](#31-check-band-summary-statistics)
+    - [3.2 Check Band Data Types](#32-check-band-data-types)
+    - [3.3 Visualize NDVI](#33-visualize-ndvi)
+  - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive)
+
+- [Sentinel-2 Time Series](#sentinel-2-time-series)
+  - [1. Setup](#1-setup-1)
+    - [Load Helper Functions](#load-helper-functions-1)
+    - [Define Area of Interest (AOI)](#define-area-of-interest-aoi-1)
+    - [Create Date List for Time Series](#create-date-list-for-time-series-1)
+    - [Define Reducer Statistic](#define-reducer-statistic-1)
+  - [2. Sentinel-2 Time Series Processing](#2-sentinel-2-time-series-processing)
+  - [3. Check Calculated Bands](#3-check-calculated-bands-1)
+    - [3.1 Check Band Summary Statistics](#31-check-band-summary-statistics-1)
+    - [3.2 Check Band Data Types](#32-check-band-data-types-1)
+    - [3.3 Visualize NDVI](#33-visualize-ndvi-1)
+  - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive-1)
+
+- [MODIS Annual Land Cover Dynamics (2001-2023)](#modis-annual-land-cover-dynamics-2001-2023)
+  - [1. Setup](#1-setup-2)
+    - [Load Helper Functions](#load-helper-functions-2)
+    - [Define Area of Interest (AOI)](#define-area-of-interest-aoi-2)
+  - [2. Load MODIS MCD12Q2 Dataset](#2-load-modis-mcd12q2-dataset)
+  - [3. Check Processed Bands](#3-check-processed-bands)
+  - [4. Export Time Series to Google Drive](#4-export-time-series-to-google-drive-2)
+
+---
 
 # Landsat Time Series
 Below is a simple, step-by-step guide to processing Landsat satellite imagery using Google Earth Engine (GEE) and the landsat_time_series.js script found in [https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre](https://code.earthengine.google.com/?accept_repo=users/bgcasey/science_centre). The following code snippets are meant to be copied into the GEE code editor.
