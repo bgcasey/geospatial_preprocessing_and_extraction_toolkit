@@ -7,7 +7,7 @@
 # Geospatial Preprocessing and Extraction Toolkit 
 
 ![In Development](https://img.shields.io/badge/Status-In%20Development-yellow) 
-![Languages](https://img.shields.io/badge/Languages-R%20%7C%20GEE%20JavaScript-blue)
+![Languages](https://img.shields.io/badge/Languages-R%20%7C%20GEE%20JavaScript%20%7C%20Python-blue)
 
 
 Here is a collection of scripts and resources designed to streamline geospatial data workflows, from preprocessing raw remote sensing data to extracting relevant features for analysis. This repository focuses on leveraging tools like Google Earth Engine (GEE), and the `terra` and `sf` R packages to handle common geospatial tasks efficiently and reproducibly.
@@ -30,6 +30,79 @@ Here is a [vignette](geospatial_extraction.md) for extracting geospatial data us
 
 ### **Google Earth Engine Vignette**
 A [vignette](google_earth_engine_vignette.md) with instructions on how to setup GEE and load and run Science Centre scripts and helper functions [^1] from within the [Earth Engine Code Editor](code.earthengine.google.com) 
+
+### **Running GEE via Python in VS Code**
+Instructions for driving Earth Engine from the Python API in VS Code (instead of the JS Code Editor), using `geemap` for interactive maps. See [GEE via VS Code (Python API)](#gee-via-vs-code-python-api) below.
+
+
+---
+
+## GEE via VS Code (Python API)
+
+Python API workflow (not the JS Code Editor). `geemap` handles interactive maps, since VS Code doesn't render `ee` objects natively.
+
+### Prerequisites (Cloud side, one-time)
+
+- **Cloud project + EE API enabled.** Every request routes through a Google Cloud project with the Earth Engine API turned on.
+- **Registration + tier.** Noncommercial projects default to the Community Tier; the tier can be changed anytime.
+- **Verification check.** Projects registered before 15 Apr 2025 needed noncommercial eligibility verification (deadline 26 Sep 2025). Confirm the project you'll use is already verified/active, or `ee.Initialize()` fails with an access error.
+
+### Environment setup
+
+- **Extensions:** Python (Microsoft) + Jupyter. Pylance optional (typing).
+- **Isolated environment** (keeps EE deps off the ArcPy/base env):
+
+```bash
+python -m venv .venv
+# or: conda create -n gee python=3.11
+```
+
+- **Install packages:**
+
+```bash
+pip install earthengine-api geemap
+# geemap pulls in folium/ipyleaflet, ipywidgets, etc.
+```
+
+- **Select the interpreter:** Command Palette → *Python: Select Interpreter* → `.venv`/conda env.
+- **Optional:** install the `gcloud` CLI. GEE uses Google Cloud for auth; `gcloud` gives the cleanest flow and lets you manage/switch projects from the terminal. See [Spatial Thoughts](https://courses.spatialthoughts.com/install-gee-python-api.html).
+
+### Authentication & initialization
+
+One-time auth (opens a browser, stores a token at `~/.config/earthengine/credentials`):
+
+```python
+import ee
+ee.Authenticate()            # or run `earthengine authenticate` in the terminal
+ee.Initialize(project='your-project-id')
+```
+
+Set a default project to drop the argument later:
+
+```bash
+earthengine set_project your-project-id
+```
+
+Sanity check:
+
+```python
+print(ee.String('Hello from the Earth Engine servers!').getInfo())
+```
+
+For headless/CI runs, use a service account instead: `ee.ServiceAccountCredentials(email, key_file)`.
+
+### Interactive workflow
+
+No built-in `Map` object. Two modes:
+
+- **`.ipynb` / interactive window** — best for exploration; `geemap` renders inline:
+
+```python
+import geemap
+m = geemap.Map(center=[54.5, -113.5], zoom=6)   # north-central AB
+m.add_layer(ee.Image('USGS/SRTMGL1_003'), {'min': 0, 'max': 3000}, 'DEM')
+m
+```
 
 
 ---

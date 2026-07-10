@@ -52,9 +52,12 @@ clone_gee_project() {
   fi
 }
 
-# set directory to clone GEE git into (should be empty)
-cd Z:/1_projects/geospatial_preprocessing_and_extraction_toolkit/scripts/preprocessing/gee
+# set directory to clone GEE git into (should be empty).
+# Resolve the directory this script lives in so it works from any
+# drive or checkout location, independent of the project root path.
+script_dir=$(cd "$(dirname "${BASH_SOURCE[0]:-$0}")" && pwd)
+cd "$script_dir"
 
 # clone PIWO and functions projects
-clone_gee_project "https://earthengine.googlesource.com/users/bgcasey/science_centre" true true
+clone_gee_project "https://earthengine.googlesource.com/users/bgcasey/science_centre_dev" true true
 
