@@ -59,11 +59,12 @@ via GitHub's **"Use this template"** button.
 | `1_code/python/`       | Python scripts and function files.                      |
 | `1_code/javascript/`   | JavaScript / GEE scripts and function files.            |
 | `2_pipeline/`          | Intermediate files — logs, checkpoints, partial outputs. |
-| `3_output/data/`       | Final data products.                                    |
-| `3_output/figures/`    | Publication-ready figures.                              |
-| `3_output/maps/`       | Map products and GIS layers.                            |
-| `3_output/models/`     | Final model objects, predictions, performance metrics.  |
-| `3_output/tables/`     | Summary and statistical tables.                         |
+| `3_output/<version>/`  | Top-level version folder (e.g., `v0.1/`, `v0.2/`) preserving each results iteration. |
+| `3_output/<version>/data/`    | Final data products.                             |
+| `3_output/<version>/figures/` | Publication-ready figures.                       |
+| `3_output/<version>/maps/`    | Map products and GIS layers.                     |
+| `3_output/<version>/models/`  | Final model objects, predictions, performance metrics. |
+| `3_output/<version>/tables/`  | Summary and statistical tables.                  |
 | `4_writing/`           | Manuscripts (`manuscript/`) and reports (`reports/`).   |
 | `README.md`            | Project overview, setup, dependencies, and run order.   |
 
@@ -77,7 +78,9 @@ via GitHub's **"Use this template"** button.
 - `0_data/` and `2_pipeline/` are generally `.gitignore`d. Don't assume
   data files will be committed; refer to them by relative path.
 - Anything meant to be archived, shared, or cited belongs in
-  `3_output/`.
+  `3_output/`, grouped under a top-level version folder (e.g.,
+  `v0.1/`, `v0.2/`). Increment the version when outputs are
+  regenerated so prior results stay intact.
 - Each `README.md` opens with two [shields.io](https://shields.io/)
   badges — a **status** badge and a **languages** badge.
 
