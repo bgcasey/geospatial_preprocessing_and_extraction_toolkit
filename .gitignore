@@ -51,3 +51,10 @@ rsconnect/
 # Local coding conventions for AI assistants.
 CLAUDE.md
 AGENTS.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
