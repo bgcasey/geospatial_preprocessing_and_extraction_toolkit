@@ -29,6 +29,7 @@ four `climatena_*.R` scripts).
 | [climatena_fabdem_stack_native.R](scripts/r/climatena_fabdem_stack_native.R) | Repackages those per-period folders into one 85-band GeoTIFF each, on the native lon/lat grid. No reprojection, resampling, cropping, or masking — cell values are untouched. |
 | [climatena_fabdem_align_abmi_1km.R](scripts/r/climatena_fabdem_align_abmi_1km.R) | Crops to Alberta, reprojects to EPSG:3400, and resamples onto the ABMI 1 km reference grid, giving one masked 85-band GeoTIFF per period. |
 | [climatena_extract_annual_to_xy.R](scripts/r/climatena_extract_annual_to_xy.R) | Extracts annual ClimateNA values directly to lat/lon point locations from a CSV, returning a CSV of climate variables. |
+| [fabdem_topography_stack_abmi1km.R](scripts/r/fabdem_topography_stack_abmi1km.R) | Combines the ten single-band FABDEM topographic rasters (elevation, slope, TRI, TWI, TPI and deviation at 250/1000/2000 m) into one 10-band GeoTIFF on the ABMI 1 km grid. No reprojection or resampling — the inputs already share the grid. |
 
 ---
 
